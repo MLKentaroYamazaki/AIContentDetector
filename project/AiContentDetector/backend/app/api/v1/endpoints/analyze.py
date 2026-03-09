@@ -1,10 +1,11 @@
 from fastapi import APIRouter
-from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, Breakdown, HighlightedSection
+from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, Breakdown
 from app.services.statistical import (
     calculate_burstiness,
     calculate_punctuation_density,
     calculate_statistical_score,
 )
+from app.services.similarity import calculate_similarity_score
 
 router = APIRouter()
 
@@ -16,12 +17,13 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     statistical_score = calculate_statistical_score(text)
     burstiness = calculate_burstiness(text)
     punctuation_density = calculate_punctuation_density(text)
+    similarity_score = await calculate_similarity_score(text)
 
-    # Phase3実装前は similarity_score をプレースホルダー（-1）とする
-    similarity_score = -1
-
-    # overall_score: Phase3実装前は統計スコアのみで算出
-    overall_score = statistical_score
+    # overall_score: 統計スコア40% + 類似度スコア60%
+    if similarity_score == 50 and not text.strip():
+        overall_score = 50
+    else:
+        overall_score = int(round(statistical_score * 0.4 + similarity_score * 0.6))
 
     breakdown = Breakdown(
         sentence_variability=round(burstiness, 4),

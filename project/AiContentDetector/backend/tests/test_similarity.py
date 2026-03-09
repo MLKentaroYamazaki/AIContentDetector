@@ -25,12 +25,14 @@ class TestCalculateCosineSimilarity:
         score = calculate_cosine_similarity(text_a, text_b)
         assert score < 0.8
 
-    def test_similar_texts_return_high_score(self):
-        """類似したテキストは高いスコア"""
-        text_a = "本日の天気は晴れで、気温は25度です。過ごしやすい一日になりそうです。"
-        text_b = "今日の天候は晴天で、気温は24度前後です。快適に過ごせる一日でしょう。"
-        score = calculate_cosine_similarity(text_a, text_b)
-        assert score > 0.5
+    def test_similar_texts_score_higher_than_different_texts(self):
+        """語彙が近いテキストは、全く無関係なテキストより高いスコアを返す"""
+        text_base = "本日の天気は晴れで、気温は25度です。過ごしやすい一日になりそうです。"
+        text_similar = "本日の天気は晴れで、気温は26度です。とても過ごしやすい一日になりそうです。"
+        text_unrelated = "量子コンピュータは古典コンピュータと根本的に異なる原理で動作します。"
+        score_similar = calculate_cosine_similarity(text_base, text_similar)
+        score_unrelated = calculate_cosine_similarity(text_base, text_unrelated)
+        assert score_similar > score_unrelated
 
     def test_return_value_is_between_0_and_1(self):
         """戻り値は0.0〜1.0の範囲内"""

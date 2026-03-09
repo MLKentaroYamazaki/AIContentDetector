@@ -76,12 +76,18 @@ async def regenerate_text(prompt: str) -> str:
 
 
 async def calculate_similarity_score(text: str) -> int:
-    """類似度スコアを計算する（0〜100、高いほどAIらしい）"""
+    """類似度スコアを計算する（0〜100、高いほどAIらしい）
+    Claude APIが利用できない場合は -1 を返す。
+    """
     if not text.strip():
         return 50
 
-    inferred_prompt = await reverse_prompt(text)
-    regenerated = await regenerate_text(inferred_prompt)
-    similarity = calculate_cosine_similarity(text, regenerated)
-
-    return int(round(similarity * 100))
+    try:
+        inferred_prompt = await reverse_prompt(text)
+        regenerated = await regenerate_text(inferred_prompt)
+        similarity = calculate_cosine_similarity(text, regenerated)
+        return int(round(similarity * 100))
+    except anthropic.BadRequestError:
+        return -1
+    except anthropic.APIStatusError:
+        return -1

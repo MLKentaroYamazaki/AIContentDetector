@@ -54,23 +54,44 @@ def generate_highlighted_sections(text: str) -> list[HighlightedSection]:
 
 
 async def generate_advice(text: str, overall_score: int) -> str:
-    """Claude APIを使って人間らしく修正するためのアドバイスを生成する"""
+    """Claude APIを使って人間らしく修正するためのアドバイスを生成する。
+    Claude APIが利用できない場合はスコアに基づいた固定アドバイスを返す。
+    """
     if overall_score < 50:
         return _LOW_SCORE_MESSAGE
 
-    response = await anthropic_client.messages.create(
-        model=MODEL,
-        max_tokens=512,
-        messages=[
-            {
-                "role": "user",
-                "content": (
-                    f"以下のテキストはAIが生成した可能性が高いと判定されました（AI確信度: {overall_score}%）。\n"
-                    "このテキストをより人間らしく自然に修正するための具体的なアドバイスを、"
-                    "箇条書き3点以内で日本語で答えてください。アドバイスのみを返してください。\n\n"
-                    f"テキスト:\n{text}"
-                ),
-            }
-        ],
+    try:
+        response = await anthropic_client.messages.create(
+            model=MODEL,
+            max_tokens=512,
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        f"以下のテキストはAIが生成した可能性が高いと判定されました（AI確信度: {overall_score}%）。\n"
+                        "このテキストをより人間らしく自然に修正するための具体的なアドバイスを、"
+                        "箇条書き3点以内で日本語で答えてください。アドバイスのみを返してください。\n\n"
+                        f"テキスト:\n{text}"
+                    ),
+                }
+            ],
+        )
+        return response.content[0].text
+    except anthropic.BadRequestError:
+        return _fallback_advice(overall_score)
+    except anthropic.APIStatusError:
+        return _fallback_advice(overall_score)
+
+
+def _fallback_advice(overall_score: int) -> str:
+    """Claude API利用不可時のフォールバックアドバイス"""
+    if overall_score >= 75:
+        return (
+            "・文の長さにバラつきを持たせましょう。短い文と長い文を意図的に混ぜてみてください。\n"
+            "・体験談や感情表現を加えると、より人間らしい文章になります。\n"
+            "・「〜となっています」「〜の見込みです」などの定型表現を言い換えてみましょう。"
+        )
+    return (
+        "・一部の表現を口語的に書き直すと、より自然な印象になります。\n"
+        "・接続詞を使いすぎている場合は、文を分割してみましょう。"
     )
-    return response.content[0].text

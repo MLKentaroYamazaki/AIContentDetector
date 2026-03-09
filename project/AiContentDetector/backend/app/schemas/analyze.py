@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AnalyzeRequest(BaseModel):
-    content: str
+    content: str = Field(max_length=5000)
 
 
 class Breakdown(BaseModel):

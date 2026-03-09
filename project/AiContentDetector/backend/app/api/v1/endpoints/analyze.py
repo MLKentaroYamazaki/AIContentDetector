@@ -20,9 +20,11 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     punctuation_density = calculate_punctuation_density(text)
     similarity_score = await calculate_similarity_score(text)
 
-    # overall_score: 統計スコア40% + 類似度スコア60%
-    if similarity_score == 50 and not text.strip():
+    # overall_score: Claude API利用可能なら統計40% + 類似度60%、不可なら統計のみ
+    if not text.strip():
         overall_score = 50
+    elif similarity_score == -1:
+        overall_score = statistical_score
     else:
         overall_score = int(round(statistical_score * 0.4 + similarity_score * 0.6))
 

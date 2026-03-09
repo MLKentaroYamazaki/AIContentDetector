@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PATH=\"/Users/kentaro_yamazaki/.local/bin:/Users/kentaro_yamazaki/.nvm/versions/node/v24.13.0/bin:$PATH\" node -e \":*)",
+      "Bash(PATH=\"/Users/kentaro_yamazaki/.nvm/versions/node/v24.13.0/bin:$PATH\" npx @tailwindcss/cli -i ./app/globals.css -o ./public/tailwind.css)",
+      "Bash(PATH=\"/Users/kentaro_yamazaki/.nvm/versions/node/v24.13.0/bin:$PATH\" npx @tailwindcss/cli@4.2.1 -i ./app/globals.css -o ./public/tailwind.css)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/api/v1/analyze -X POST -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"テスト\"\"}')",
+      "Bash(xargs cat)",
+      "Bash(python3 -m uvicorn --version)",
+      "Bash(curl -s -X OPTIONS http://localhost:8000/api/v1/analyze -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\" -D -)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector status)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector log --oneline)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector restore --staged .env)",
+      "Bash(python3 -c \"import slowapi\")",
+      "Bash(python3 -m pip install slowapi)"
+    ]
+  }
+}

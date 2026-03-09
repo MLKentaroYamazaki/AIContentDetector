@@ -24,13 +24,16 @@ export default function RadarChart({ statisticalScore, sentenceVariability, punc
 
   return (
     <div className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-700 mb-4">分析内訳</h2>
-      <ResponsiveContainer width="100%" height={240}>
+      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">分析内訳</h2>
+      <ResponsiveContainer width="100%" height={220}>
         <RechartsRadar data={data} outerRadius="70%">
-          <PolarGrid />
-          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Radar dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+          <PolarGrid stroke="#e2e8f0" />
+          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: "#64748b" }} />
+          <Tooltip
+            contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
+            formatter={(value: number) => [`${value}`, "スコア"]}
+          />
+          <Radar dataKey="value" stroke="#6366f1" fill="#6366f1" fillOpacity={0.25} />
         </RechartsRadar>
       </ResponsiveContainer>
     </div>

@@ -6,16 +6,24 @@ from app.main import app
 
 client = TestClient(app)
 
-# Claude APIを使う calculate_similarity_score をモック化
+# Claude APIを使う関数をモック化
 MOCK_SIMILARITY_SCORE = 72
+MOCK_ADVICE = "文の長さにバラつきを持たせましょう。"
 
 
-def _make_client(similarity_score: int = MOCK_SIMILARITY_SCORE):
-    """similarity_score をモックした状態でリクエストを送るコンテキストマネージャ"""
-    return patch(
+from contextlib import contextmanager
+
+@contextmanager
+def _make_client(similarity_score: int = MOCK_SIMILARITY_SCORE, advice: str = MOCK_ADVICE):
+    """similarity_score と generate_advice をモックした状態でリクエストを送る"""
+    with patch(
         "app.api.v1.endpoints.analyze.calculate_similarity_score",
         new=AsyncMock(return_value=similarity_score),
-    )
+    ), patch(
+        "app.api.v1.endpoints.analyze.generate_advice",
+        new=AsyncMock(return_value=advice),
+    ):
+        yield
 
 
 class TestAnalyzeEndpoint:

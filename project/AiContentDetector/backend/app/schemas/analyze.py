@@ -21,3 +21,4 @@ class AnalyzeResponse(BaseModel):
     similarity_score: int
     breakdown: Breakdown
     highlighted_sections: list[HighlightedSection]
+    advice: str = ""

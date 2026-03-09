@@ -6,6 +6,7 @@ from app.services.statistical import (
     calculate_statistical_score,
 )
 from app.services.similarity import calculate_similarity_score
+from app.services.highlight import generate_highlighted_sections, generate_advice
 
 router = APIRouter()
 
@@ -29,11 +30,14 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         sentence_variability=round(burstiness, 4),
         top_k_overlap=round(punctuation_density, 4),
     )
+    highlighted_sections = generate_highlighted_sections(text)
+    advice = await generate_advice(text, overall_score)
 
     return AnalyzeResponse(
         overall_score=overall_score,
         statistical_score=statistical_score,
         similarity_score=similarity_score,
         breakdown=breakdown,
-        highlighted_sections=[],
+        highlighted_sections=highlighted_sections,
+        advice=advice,
     )

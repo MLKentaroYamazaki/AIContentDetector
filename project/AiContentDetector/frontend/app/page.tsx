@@ -5,6 +5,7 @@ import TextInput from "./components/TextInput";
 import ResultCard from "./components/ResultCard";
 import RadarChart from "./components/RadarChart";
 import AdviceSection from "./components/AdviceSection";
+import HighlightedText from "./components/HighlightedText";
 
 interface AnalyzeResult {
   overall_score: number;
@@ -15,6 +16,7 @@ interface AnalyzeResult {
     top_k_overlap: number;
   };
   highlighted_sections: { text: string; ai_probability: number }[];
+  advice: string;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -74,10 +76,8 @@ export default function Home() {
               sentenceVariability={result.breakdown.sentence_variability}
               punctuationDensity={result.breakdown.top_k_overlap}
             />
-            <AdviceSection
-              overallScore={result.overall_score}
-              sentenceVariability={result.breakdown.sentence_variability}
-            />
+            <HighlightedText sections={result.highlighted_sections} />
+            <AdviceSection advice={result.advice} />
           </div>
         )}
       </div>

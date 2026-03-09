@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PropoSuporter - 提案資料作成AIサポーター</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a2e4a;
+      color: #fff;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header h1 { font-size: 1.25rem; font-weight: 700; }
+    header span { font-size: 0.85rem; opacity: 0.7; }
+
+    main {
+      max-width: 960px;
+      margin: 32px auto;
+      padding: 0 16px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2e4a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 .badge {
+      background: #1a2e4a;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 12px;
+      border: 1px solid #d0d7e0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+    textarea:focus { outline: none; border-color: #3b7dd8; }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    button#run-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #3b7dd8;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 16px;
+    }
+    button#run-btn:hover { background: #2c62b0; }
+    button#run-btn:disabled { background: #a0b8d8; cursor: not-allowed; }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      padding: 16px;
+      color: #3b7dd8;
+      font-size: 0.9rem;
+    }
+    .spinner.active { display: block; }
+
+    .result-section { display: none; }
+    .result-section.visible { display: grid; gap: 24px; }
+
+    .step-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px;
+      border-left: 4px solid #3b7dd8;
+    }
+
+    .step-card h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #3b7dd8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group:last-child { margin-bottom: 0; }
+    .field-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .field-value {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    .points-list { list-style: none; display: grid; gap: 10px; }
+    .points-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 14px;
+      background: #f0f5ff;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .points-list li .num {
+      background: #3b7dd8;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.75rem;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .check-ok {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #27ae60;
+      font-weight: 700;
+    }
+
+    .check-issues { display: grid; gap: 10px; }
+    .issue-item {
+      padding: 10px 14px;
+      background: #fff8f0;
+      border: 1px solid #f5a623;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .issue-category {
+      display: inline-block;
+      background: #f5a623;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 20px;
+      margin-bottom: 4px;
+    }
+
+    .error-msg {
+      background: #fff0f0;
+      border: 1px solid #e74c3c;
+      color: #e74c3c;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>PropoSuporter</h1>
+      <span>提案資料作成AIサポーター</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>
+        ヒアリングメモを入力
+        <span class="badge">Step 1〜3 自動処理</span>
+      </h2>
+      <textarea id="notes-input" placeholder="例）昨日、〇〇株式会社の担当者と商談してきました。システムが古くて困っているらしく..."></textarea>
+      <p class="hint">箇条書きや口語のメモでも構いません。そのまま貼り付けてください。</p>
+      <button id="run-btn">提案書ドラフトを生成する</button>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+    <div class="spinner" id="spinner">AI が処理中です。しばらくお待ちください...</div>
+
+    <div class="result-section" id="result-section">
+      <div class="step-card">
+        <h3>Step 1 — 与件整理</h3>
+        <div class="field-group">
+          <div class="field-label">背景</div>
+          <div class="field-value" id="req-background"></div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">現状の課題</div>
+          <div class="field-value" id="req-issues"></div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">要望・ゴール</div>
+          <div class="field-value" id="req-requests"></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h3>Step 2 — 提案骨子ドラフト</h3>
+        <div class="field-group">
+          <div class="field-label">ご提案ポイント</div>
+          <ul class="points-list" id="proposal-points"></ul>
+        </div>
+        <div class="field-group" style="margin-top:16px;">
+          <div class="field-label">開発方針</div>
+          <div class="field-value" id="proposal-policy"></div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <h3>Step 3 — フォーマット・論理チェック</h3>
+        <div id="check-result"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const btn = document.getElementById('run-btn');
+    const spinner = document.getElementById('spinner');
+    const resultSection = document.getElementById('result-section');
+    const errorMsg = document.getElementById('error-msg');
+
+    btn.addEventListener('click', async () => {
+      const notes = document.getElementById('notes-input').value.trim();
+      if (!notes) {
+        showError('ヒアリングメモを入力してください。');
+        return;
+      }
+
+      setLoading(true);
+      hideError();
+      resultSection.classList.remove('visible');
+
+      try {
+        const res = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ raw_notes: notes }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'エラーが発生しました');
+        }
+
+        const data = await res.json();
+        renderResult(data);
+      } catch (e) {
+        showError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    function renderResult(data) {
+      // Step 1
+      document.getElementById('req-background').textContent = data.requirements.background;
+      document.getElementById('req-issues').textContent = data.requirements.issues;
+      document.getElementById('req-requests').textContent = data.requirements.requests;
+
+      // Step 2
+      const ul = document.getElementById('proposal-points');
+      ul.innerHTML = '';
+      data.proposal.proposal_points.forEach((pt, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="num">${i + 1}</span><span>${pt}</span>`;
+        ul.appendChild(li);
+      });
+      document.getElementById('proposal-policy').textContent = data.proposal.development_policy;
+
+      // Step 3
+      const checkDiv = document.getElementById('check-result');
+      if (data.check.is_ok) {
+        checkDiv.innerHTML = '<div class="check-ok">✅ 問題なし — すべてのチェックをパスしました</div>';
+      } else {
+        const issuesHtml = data.check.issues.map(issue => `
+          <div class="issue-item">
+            <span class="issue-category">${issue.category}</span>
+            <div>${issue.description}</div>
+          </div>
+        `).join('');
+        checkDiv.innerHTML = `<div class="check-issues">${issuesHtml}</div>`;
+      }
+
+      resultSection.classList.add('visible');
+    }
+
+    function setLoading(loading) {
+      btn.disabled = loading;
+      btn.textContent = loading ? '処理中...' : '提案書ドラフトを生成する';
+      spinner.classList.toggle('active', loading);
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add('visible');
+    }
+
+    function hideError() {
+      errorMsg.classList.remove('visible');
+    }
+  </script>
+</body>
+</html>

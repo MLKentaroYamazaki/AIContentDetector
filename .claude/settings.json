@@ -42,7 +42,12 @@
       "Read(//usr/local/lib/**)",
       "Read(//opt/**)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" http://localhost:3000/)",
-      "Bash(git add project/AiContentDetector/frontend/)"
+      "Bash(git add project/AiContentDetector/frontend/)",
+      "Bash(/Users/kentaro_yamazaki/claude/.venv/bin/python --version)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude status)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude log --oneline -5)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude diff HEAD .claude/settings.json)",
+      "Bash(git add:*)"
     ],
     "additionalDirectories": [
       "/Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/api/auth"

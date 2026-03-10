@@ -1,4 +1,0 @@
-slack-sdk>=3.0.0
-atlassian-python-api>=3.0.0
-python-dotenv>=1.0.0
-pytz>=2024.1

@@ -1,7 +1,0 @@
-2026-03-05 17:28:08,706 INFO __main__ 実行開始: 2026-02-24〜2026-03-03
-2026-03-05 17:28:09,100 WARNING slack_client Slack API エラー（1/3回目）: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
-The server responded with: {'ok': False, 'error': 'missing_scope', 'needed': 'channels:history,groups:history,mpim:history,im:history', 'provided': 'identify,app_configurations:read,app_configurations:write'}
-2026-03-05 17:28:10,437 WARNING slack_client Slack API エラー（2/3回目）: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
-The server responded with: {'ok': False, 'error': 'missing_scope', 'needed': 'channels:history,groups:history,mpim:history,im:history', 'provided': 'identify,app_configurations:read,app_configurations:write'}
-2026-03-05 17:28:11,777 ERROR slack_client Slack API 失敗（最大リトライ回数超過）: The request to the Slack API failed. (url: https://slack.com/api/conversations.history)
-The server responded with: {'ok': False, 'error': 'missing_scope', 'needed': 'channels:history,groups:history,mpim:history,im:history', 'provided': 'identify,app_configurations:read,app_configurations:write'}

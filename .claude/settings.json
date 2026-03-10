@@ -26,7 +26,23 @@
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''providers:'', list\\(d.keys\\(\\)\\)\\)\")",
       "Bash(git rm --cached backend/.env)",
       "Bash(sed -i '' 's/@monstarlab\\\\.com アカウントでログインしてください/@monstar-lab.com アカウントでログインしてください/' /Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/login/page.tsx)",
-      "Bash(sed -i '' 's/@monstarlab\\\\.com のアカウントのみ利用可能です/@monstar-lab.com のアカウントのみ利用可能です/' /Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/login/page.tsx)"
+      "Bash(sed -i '' 's/@monstarlab\\\\.com のアカウントのみ利用可能です/@monstar-lab.com のアカウントのみ利用可能です/' /Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/login/page.tsx)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector ls-files --error-unmatch .env)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector ls-files --error-unmatch frontend/.env.local)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector ls-files --error-unmatch backend/.env)",
+      "Read(//dev/**)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude check-ignore project/AiContentDetector/backend/.env project/AiContentDetector/.env)",
+      "Bash(git -C /Users/kentaro_yamazaki/claude check-ignore -v project/AiContentDetector/backend/.env project/AiContentDetector/.env)",
+      "Read(//private/tmp/**)",
+      "Bash(/Users/kentaro_yamazaki/claude/.venv/bin/pip install slowapi==0.1.9 -q)",
+      "Bash(curl -s http://localhost:8000/api/v1/analyze -X POST -H \"Content-Type: application/json\" -d '{\"\"content\"\": \"\"これはテストです。\"\"}')",
+      "Bash(python3 -m json.tool)",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/local/lib/**)",
+      "Read(//opt/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" http://localhost:3000/)",
+      "Bash(git add project/AiContentDetector/frontend/)"
     ],
     "additionalDirectories": [
       "/Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/api/auth"

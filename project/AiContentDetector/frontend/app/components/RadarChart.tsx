@@ -31,7 +31,7 @@ export default function RadarChart({ statisticalScore, sentenceVariability, punc
           <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: "#64748b" }} />
           <Tooltip
             contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
-            formatter={(value: number) => [`${value}`, "スコア"]}
+            formatter={(value) => [`${value}`, "スコア"]}
           />
           <Radar dataKey="value" stroke="#6366f1" fill="#6366f1" fillOpacity={0.25} />
         </RechartsRadar>

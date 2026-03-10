@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, Breakdown
 from app.services.statistical import (
     calculate_burstiness,
@@ -7,13 +7,15 @@ from app.services.statistical import (
 )
 from app.services.similarity import calculate_similarity_score
 from app.services.highlight import generate_highlighted_sections, generate_advice
+from app.core.limiter import limiter
 
 router = APIRouter()
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
-async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
-    text = request.content
+@limiter.limit("10/minute")
+async def analyze(request: Request, body: AnalyzeRequest) -> AnalyzeResponse:
+    text = body.content
 
     statistical_score = calculate_statistical_score(text)
     burstiness = calculate_burstiness(text)

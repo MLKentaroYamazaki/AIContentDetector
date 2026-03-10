@@ -13,7 +13,23 @@
       "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector log --oneline)",
       "Bash(git -C /Users/kentaro_yamazaki/claude/project/AiContentDetector restore --staged .env)",
       "Bash(python3 -c \"import slowapi\")",
-      "Bash(python3 -m pip install slowapi)"
+      "Bash(python3 -m pip install slowapi)",
+      "Bash(python3 -c \"from app.main import app; print\\(''OK''\\)\")",
+      "Bash(curl -s http://localhost:8000/api/v1/analyze -X POST -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"テスト\"\"}')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''score:'', d[''overall_score'']\\)\")",
+      "Bash(curl -s -D - -X OPTIONS http://localhost:8000/api/v1/analyze -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\")",
+      "Bash(curl -s http://localhost:8000/api/v1/analyze -X POST -H \"Content-Type: application/json\" -d '{\"\"content\"\":\"\"test\"\"}')",
+      "Bash(PATH=\"/Users/kentaro_yamazaki/.nvm/versions/node/v24.13.0/bin:$PATH\" npm install next-auth@4)",
+      "Bash(/Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/.env.local:*)",
+      "Bash(/Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/.env.local.example:*)",
+      "Bash(openssl rand -base64 32)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''providers:'', list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(git rm --cached backend/.env)",
+      "Bash(sed -i '' 's/@monstarlab\\\\.com アカウントでログインしてください/@monstar-lab.com アカウントでログインしてください/' /Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/login/page.tsx)",
+      "Bash(sed -i '' 's/@monstarlab\\\\.com のアカウントのみ利用可能です/@monstar-lab.com のアカウントのみ利用可能です/' /Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/login/page.tsx)"
+    ],
+    "additionalDirectories": [
+      "/Users/kentaro_yamazaki/claude/project/AiContentDetector/frontend/app/api/auth"
     ]
   }
 }

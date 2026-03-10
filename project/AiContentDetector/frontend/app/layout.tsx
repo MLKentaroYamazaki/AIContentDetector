@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "AI Content Detector",
@@ -17,7 +18,7 @@ export default function RootLayout({
         <link href="/tailwind.css" rel="stylesheet" />
       </head>
       <body>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

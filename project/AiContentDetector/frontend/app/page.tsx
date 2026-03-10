@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AuthGuard } from "./components/AuthGuard";
 import TextInput from "./components/TextInput";
 import ResultCard from "./components/ResultCard";
 import RadarChart from "./components/RadarChart";
@@ -46,6 +47,7 @@ export default function Home() {
   }
 
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-slate-50 py-12 px-4">
       <div className="max-w-3xl mx-auto flex flex-col gap-8">
 
@@ -91,5 +93,6 @@ export default function Home() {
 
       </div>
     </main>
+    </AuthGuard>
   );
 }

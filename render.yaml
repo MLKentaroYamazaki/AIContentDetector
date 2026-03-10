@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ai-content-detector-api
+    runtime: python
+    rootDir: project/AiContentDetector/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false

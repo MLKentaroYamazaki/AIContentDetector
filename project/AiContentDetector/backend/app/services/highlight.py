@@ -1,6 +1,6 @@
 """テキストハイライトとアドバイス生成ロジック"""
 import re
-import numpy as np
+import math
 import anthropic
 from app.core.config import settings
 from app.schemas.analyze import HighlightedSection
@@ -23,13 +23,17 @@ def _sentence_ai_probability(sentence: str, all_lengths: list[float]) -> float:
     """文の長さが全文の平均に近いほどAIらしい（確率が高い）"""
     if not all_lengths:
         return 0.5
-    mean = float(np.mean(all_lengths))
-    std = float(np.std(all_lengths)) if len(all_lengths) > 1 else 1.0
+    mean = sum(all_lengths) / len(all_lengths)
+    if len(all_lengths) > 1:
+        variance = sum((x - mean) ** 2 for x in all_lengths) / len(all_lengths)
+        std = math.sqrt(variance)
+    else:
+        std = 1.0
     if std == 0:
         return 0.8  # 全文の長さが同じ = AIらしい
     z = abs(len(sentence) - mean) / std
     # z が小さい（平均的な長さ）ほど AI らしい → 確率高
-    probability = float(np.clip(1.0 - (z / 3.0), 0.0, 1.0))
+    probability = min(1.0, max(0.0, 1.0 - (z / 3.0)))
     return round(probability, 4)
 
 

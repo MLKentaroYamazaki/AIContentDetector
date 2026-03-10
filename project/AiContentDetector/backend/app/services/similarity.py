@@ -1,8 +1,7 @@
 """Claude APIを使った類似度比較ロジック"""
 import re
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity as sklearn_cosine_similarity
+import math
+from collections import Counter
 import anthropic
 from app.core.config import settings
 
@@ -11,13 +10,12 @@ anthropic_client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
 MODEL = "claude-haiku-4-5-20251001"
 
 
-def _tokenize_japanese(text: str) -> str:
-    """日本語テキストを文字bigramに分割してスペース区切りで返す"""
+def _tokenize_japanese(text: str) -> list[str]:
+    """日本語テキストを文字bigramに分割してリストで返す"""
     cleaned = re.sub(r'[\s\u3000]', '', text)
     if len(cleaned) < 2:
-        return cleaned
-    bigrams = [cleaned[i:i+2] for i in range(len(cleaned) - 1)]
-    return " ".join(bigrams)
+        return list(cleaned)
+    return [cleaned[i:i+2] for i in range(len(cleaned) - 1)]
 
 
 def calculate_cosine_similarity(text_a: str, text_b: str) -> float:
@@ -25,20 +23,27 @@ def calculate_cosine_similarity(text_a: str, text_b: str) -> float:
     if not text_a.strip() and not text_b.strip():
         return 0.0
 
-    tokenized_a = _tokenize_japanese(text_a)
-    tokenized_b = _tokenize_japanese(text_b)
+    tokens_a = _tokenize_japanese(text_a)
+    tokens_b = _tokenize_japanese(text_b)
 
-    if not tokenized_a or not tokenized_b:
+    if not tokens_a or not tokens_b:
         return 0.0
 
-    vectorizer = TfidfVectorizer()
-    try:
-        tfidf_matrix = vectorizer.fit_transform([tokenized_a, tokenized_b])
-    except ValueError:
-        return 0.0
+    # TF-IDF（簡易版: 2文書なのでIDFはスキップしTFのみでコサイン類似度を計算）
+    freq_a = Counter(tokens_a)
+    freq_b = Counter(tokens_b)
+    vocab = set(freq_a) | set(freq_b)
 
-    similarity = sklearn_cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])
-    return float(np.clip(similarity[0][0], 0.0, 1.0))
+    vec_a = [freq_a.get(t, 0) / len(tokens_a) for t in vocab]
+    vec_b = [freq_b.get(t, 0) / len(tokens_b) for t in vocab]
+
+    dot = sum(a * b for a, b in zip(vec_a, vec_b))
+    norm_a = math.sqrt(sum(a * a for a in vec_a))
+    norm_b = math.sqrt(sum(b * b for b in vec_b))
+
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return min(1.0, max(0.0, dot / (norm_a * norm_b)))
 
 
 async def reverse_prompt(text: str) -> str:

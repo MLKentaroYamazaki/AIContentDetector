@@ -1,6 +1,6 @@
 """統計的アプローチによるAIコンテンツ検出ロジック"""
 import re
-import numpy as np
+import math
 
 
 def _split_sentences(text: str) -> list[str]:
@@ -22,12 +22,14 @@ def calculate_burstiness(text: str) -> float:
     if len(sentences) <= 1:
         return 0.0
 
-    lengths = np.array([len(s) for s in sentences], dtype=float)
-    mean = lengths.mean()
+    lengths = [float(len(s)) for s in sentences]
+    mean = sum(lengths) / len(lengths)
     if mean == 0:
         return 0.0
 
-    cv = lengths.std() / mean
+    variance = sum((x - mean) ** 2 for x in lengths) / len(lengths)
+    std = math.sqrt(variance)
+    cv = std / mean
     # CV=1.0 を上限1.0にクリップ（人間らしい文章では通常0.5〜1.0程度）
     return float(min(cv, 1.0))
 
